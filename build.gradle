@@ -1,6 +1,11 @@
 plugins {
-    id 'java'
+    id 'application'
 }
+
+application{
+    mainClass = "edu.handong.isel.itc.deeplearning.Main"
+}
+
 
 group = 'org.example'
 version = '1.0-SNAPSHOT'
@@ -12,6 +17,7 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation group: 'gov.nist.math', name: 'jama', version: '1.0.2'
 }
 
 test {
