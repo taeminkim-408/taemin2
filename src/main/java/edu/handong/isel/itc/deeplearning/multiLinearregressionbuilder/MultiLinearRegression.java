@@ -100,7 +100,6 @@ public class MultiLinearRegression {
 
 
     public double[] predict(double[][] xData) {
-
         System.out.println("dndjndj");
         // 입력 데이터를 기반으로 예측값을 계산
         double[] result = new double[xData.length];

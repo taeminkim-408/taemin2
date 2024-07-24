@@ -1,96 +1,91 @@
 package edu.handong.isel.itc.deeplearning.logisticregression;
 import Jama.Matrix;
 
+import java.util.Arrays;
+
 public class LogisticRegression {
-    private double[] xData;
-    private double[] yData;
+    private double[] weights;
+    private double bias;
     private double learningRate;
-    private double weight;
     private int iterations;
 
-    private double[] xData_input;
-    private double[] yData_input;
-
-
-    public LogisticRegression(double[] xData, double[] yData, double learningRate, double weight, int iterations, double[] xData_input,double[] yData_input) {
-        this.xData = xData;
-        this.yData = yData;
+    public LogisticRegression(int numFeatures, double learningRate, int iterations) {
+        this.weights = new double[numFeatures];
+        this.bias = 0.0;
         this.learningRate = learningRate;
-        this.weight = weight;
         this.iterations = iterations;
-        this.xData_input = xData_input;
-        this.yData_input = yData_input;
     }
 
-    public double Hyperthesis(double w, double x) {
-        return sigmoid(w * x);
-    }
+    public void train(double[][] X, double[] y) {
 
-    public double sigmoid(double x) {
-        return 1.0 / (1.0 + Math.exp(-x));
-    }
 
-    public double Cost(double w, double[] x, double[] y) {
-        double cost = 0.0;
-        for (int i = 0; i < x.length; i++) {
-            double h = Hyperthesis(w, x[i]);
-            cost += -y[i] * Math.log(h) - (1.0 - y[i]) * Math.log(1.0 - h);
-        }
-        cost = cost / x.length;
-        return cost;
-    }
-
-    public double calculateGradient(double w, double[] x, double[] y) {
-        double gradient = 0.0;
-        for (int i = 0; i < x.length; i++) {
-            double error = Hyperthesis(w, x[i]) - y[i];
-            gradient += error * x[i];
-        }
-        gradient = gradient / x.length;
-        return gradient;
-    }
-
-    public void train() {
+        int m = X.length;
         for (int i = 0; i < iterations; i++) {
-            double cost = Cost(weight, xData, yData);
-            double gradient = calculateGradient(weight, xData, yData);
-            weight -= learningRate * gradient;
-            printAll(i, cost, weight, gradient);
-        }
-        for(int i=0;i<xData_input.length;i++){
-            System.out.println("Testcase" +i+" = "+predict_x(xData_input[i]));
-//            System.out.println("Testcase" +i+" = "+predict_x(xData_input[i]) + "Y = " + predict_y(xData_input[i],yData_input[i]));
-        }
-
-        for(int i=0;i<xData_input.length;i++){
-            for(int j=0;j<yData_input.length;j++){
-//                System.out.println("Testcase" +i+" Y = " + predict_y(xData_input[i],yData_input[i]));
+            double[] linearModel = new double[m];
+            double[] predictions = new double[m];
+            for (int j = 0; j < m; j++) {
+                linearModel[j] = bias;
+                for (int k = 0; k < weights.length; k++) {
+                    linearModel[j] += weights[k] * X[j][k];
+                }
+                predictions[j] = sigmoid(linearModel[j]);
+                //weight 값을 구함
+//                System.out.println("Gradient value is = " +predictions[j] );
             }
+
+            double[] errors = new double[m];
+            for (int j = 0; j < m; j++) {
+                errors[j] = predictions[j] - y[j];
+            }
+
+            for (int k = 0; k < weights.length; k++) {
+                double gradient = 0.0;
+                for (int j = 0; j < m; j++) {
+                    gradient += X[j][k] * errors[j];
+                }
+                weights[k] -= learningRate * gradient / m;
+                System.out.println("Gradient value is = " +weights[k]);
+            }
+
+            double biasGradient = 0.0;
+            for (int j = 0; j < m; j++) {
+                biasGradient += errors[j];
+            }
+            bias -= learningRate * biasGradient / m;
         }
 
 
     }
 
-
-
-    public void printAll(int i, double cost, double weight, double gradient) {
-        System.out.println("count " + i + " | Cost: " + cost + " | Weight: " + weight + " | Gradient: " + gradient);
-    }
-
-    public double predict_x(double x) {
-        return Hyperthesis(weight, x); //확률 계산
-    }
-    public double predict_y(double x, double y) {
-        double check = Hyperthesis(weight, x);
-
-        if (check > y){
-            return 1.0;
+    public double predict(double[] X) {
+        double linearModel = bias;
+        for (int i = 0; i < weights.length; i++) {
+            linearModel += weights[i] * X[i];
         }
-        else{
-            return 0.0;
-        }
-
+        return sigmoid(linearModel);
     }
 
+    private double sigmoid(double z) {
+        return 1 / (1 + Math.exp(-z));
+    }
 
+    public static void main(String[] args) {
+        // 예제 데이터: 4개의 샘플과 2개의 특징을 가진 데이터
+        double[][] X = {
+                {0.5, 1.0},
+                {1.5, 2.0},
+                {3.0, 4.0},
+                {5.0, 6.0}
+        };
+        double[] y = {0, 0, 1, 1};
+
+        LogisticRegression model = new LogisticRegression(2, 0.1, 1000);
+        model.train(X, y);
+
+        // 테스트 데이터
+        double[] testSample = {2.0, 3.0};
+        double prediction = model.predict(testSample);
+        System.out.println("Predicted probability: " + prediction);
+        System.out.println("Predicted class: " + (prediction >= 0.5 ? 1 : 0));
+    }
 }

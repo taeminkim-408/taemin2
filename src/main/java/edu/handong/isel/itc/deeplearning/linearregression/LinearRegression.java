@@ -6,7 +6,6 @@ public class LinearRegression {
     private double[] yData;
     private double learningRate;
     private double weight;
-    private double predict;
     private int count;
 
     public LinearRegression(double[] xData, double[] yData, double learningRate, double weight, int count, double predict) {
@@ -15,27 +14,26 @@ public class LinearRegression {
         this.learningRate = learningRate;
         this.weight = weight;
         this.count = count;
-        this.predict = predict;
     }
 
-    public double Hypothesis(double w, double x) {
+    public double model(double w, double x) {
         return w * x;
     }
 
     public double GradientCost(double w, double[] x, double[] y) {
         double cost = 0.0;
         for (int i = 0; i < x.length; i++) {
-            double diff = (Hypothesis(w, x[i]) - y[i]);
+            double diff = (model(w, x[i]) - y[i]);
             cost += diff * diff;
         }
-        cost = cost /x.length;
+        cost = cost / x.length;
         return cost;
     }
 
     public double Gradient(double w, double[] x, double[] y) {
         double gradient = 0.0;
         for (int i = 0; i < x.length; i++) {
-            double error = Hypothesis(w, x[i]) - y[i];
+            double error = model(w, x[i]) - y[i];
             gradient += error * x[i];
         }
         gradient = gradient / x.length;
@@ -49,16 +47,16 @@ public class LinearRegression {
             weight = weight - learningRate * gradient;
             printAll(i, cost, weight, gradient);
         }
-        System.out.println("Predict of "+ predict + "is "+ Predict(predict));
+
     }
+
     public void printAll(int i, double cost, double weight, double gradient) {
         System.out.println("count " + i + " | Cost: " + cost + " | Weight: " + weight + " | Gradient: " + gradient);
     }
 
 
-
-    public double Predict(double x) {
-        return Hypothesis(x,weight);
+    public double predict(double x) {
+        System.out.println("Predict of " + x + "is " + model(x, weight));
+        return 0;
     }
-
 }
