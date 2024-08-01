@@ -47,17 +47,6 @@ public class Matrix {
         }
         return result;
     }
-    public static double[][][] mul(double num, double[][][] matrix){
-        double[][][] result = new double[matrix.length][matrix[0].length][matrix[0][0].length];
-        for(int i = 0; i < matrix.length; i++){
-            for(int j = 0; j < matrix[i].length; j++){
-                for(int z = 0; z < matrix[i][j].length; z++){
-                    result[i][j][z] = matrix[i][j][z] * num;
-                }
-            }
-        }
-        return result;
-    }
     public static double[] mul(double num, double[] matrix){
         double[] result = new double[matrix.length];
         for(int i = 0; i < matrix.length; i++){

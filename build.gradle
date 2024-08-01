@@ -19,6 +19,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     implementation group: 'gov.nist.math', name: 'jama', version: '1.0.2'
     implementation group: 'com.opencsv', name: 'opencsv', version: '5.8'
+    implementation group: 'commons-cli', name: 'commons-cli', version: '1.8.0'
+
 
 
 }

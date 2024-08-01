@@ -14,22 +14,29 @@ public class Layer {
     }
 
     public double[][] forward(){
-        this.hypothesis = Function.Sigfor(Matrix.dot(x, w, b));
+        this.hypothesis = Forward.sigfor(Matrix.dot(x, w, b));
         return hypothesis;
     }
+
     public double[][] backward(double[][] back){
-        double[][] dervXW = Function.Sigback(hypothesis, back);
+        double[][] dervXW = Backward.Sigback(hypothesis, back);
         w_grad = Matrix.dot(Matrix.transpose(x), dervXW);
         b_grad = calculationB_grad(b.length, dervXW);
         double[][] dervX = Matrix.dot(dervXW, Matrix.transpose(w));
         return dervX;
     }
-    public double[][] getW_Grad(){
+
+
+    public double[][] wGrad(){
         return w_grad;
     }
-    public double[] getB_grad(){
+
+
+    public double[] biasgrad(){
         return b_grad;
     }
+
+
     public double[] calculationB_grad(int size, double[][] matrix){
         double[] b_grad = new double[size];
         for(int i = 0; i < size; i++){

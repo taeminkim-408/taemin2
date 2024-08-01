@@ -21,7 +21,7 @@ public class Reader {
                 List<String> Line = new ArrayList<String>();
                 String array[] = line.split(",");
                 Line = Arrays.asList(array);
-                System.out.println(Line); //줄마다 간격 출력
+//                System.out.println(Line); //줄마다 간격 출력
                 ret.add(Line);
             }
         }catch(FileNotFoundException e){

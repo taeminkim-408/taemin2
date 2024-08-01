@@ -28,19 +28,21 @@ public class NeuralNetwork {
             layers[i] = new Layer(x, w.get(i), b.get(i));
             hypothesis = layers[i].forward();
         }
-        this.cost = Function.forwardCost(hypothesis,y);
+        this.cost = Forward.forwardCost(hypothesis,y);
         //해당 층에 cost 값을 추가
 
 
 
         //backward
-        double[][] derv = Function.backwardCost(hypothesis, y); //back word를 할려고 함
+        double[][] derv = Backward.backwardCost(hypothesis, y); //back word를 할려고 함
         for(int i = NumOfLayer-1; i >= 0; i--){
             derv = layers[i].backward(derv);
         }
         for(int i = 0; i < NumOfLayer; i++){
-            w.set(i, Matrix.sub(w.get(i), Matrix.mul(learningRate, layers[i].getW_Grad())));
-            b.set(i, Matrix.sub(b.get(i), Matrix.mul(learningRate, layers[i].getB_grad())));
+            w.set(i, Matrix.sub(w.get(i), Matrix.mul(learningRate, layers[i].wGrad())));
+            // matrix w - matrix(laeringRate * w)
+            b.set(i, Matrix.sub(b.get(i), Matrix.mul(learningRate, layers[i].biasgrad())));
+            // matrix b - matrix(laeringRate * b)
         }
     }
 
@@ -50,7 +52,8 @@ public class NeuralNetwork {
             if(hypothesis[i][0]  > 0.5 && y[i][0] == 1) temp++;
             else if(hypothesis[i][0]  < 0.5 && y[i][0] == 0) temp++;
         }
-        return temp/hypothesis.length;
+        return temp/hypothesis.length; //정답 나누기 최종 갯수
+        //이거 정확도로 풀어야 함
     }
     public double testDataAccuracy(double[][] x, double[][] y){
         hypothesis = x;
@@ -68,8 +71,5 @@ public class NeuralNetwork {
     public double getCost(){
         return cost;
     }
-    public double[][] getHypothesis() { return hypothesis;}
-    public ArrayList<double[][]> getW() { return w; }
-
 }
 
